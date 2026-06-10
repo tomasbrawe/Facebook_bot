@@ -1,0 +1,10 @@
+.env
+cookies.json
+debug_out.txt
+bot.log
+state.db
+criteria.md
+groups.txt
+__pycache__/
+.claude/
+migrate_db.py
