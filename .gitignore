@@ -7,4 +7,6 @@ criteria.md
 groups.txt
 __pycache__/
 .claude/
+.agents/
+skills-lock.json
 migrate_db.py
