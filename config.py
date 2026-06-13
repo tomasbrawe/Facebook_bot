@@ -2,9 +2,11 @@ import os
 import pathlib
 from dotenv import load_dotenv
 
-load_dotenv()
-
 BASE_DIR = pathlib.Path(__file__).parent
+
+# Load .env from the script's own folder, not the current working directory,
+# so the bot works when launched by Windows Task Scheduler (which starts in System32).
+load_dotenv(BASE_DIR / ".env")
 
 ANTHROPIC_API_KEY = os.environ["ANTHROPIC_API_KEY"]
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
