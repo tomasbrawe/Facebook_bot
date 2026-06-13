@@ -39,6 +39,7 @@ jobs:
           FB_COOKIES: ${{ secrets.FB_COOKIES }}
           RENTAL_CRITERIA: ${{ secrets.RENTAL_CRITERIA }}
           GROUP_IDS: ${{ secrets.GROUP_IDS }}
+          PROXY_URL: ${{ secrets.PROXY_URL }}
         run: python main.py
 
       - name: Commit updated state

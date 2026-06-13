@@ -11,6 +11,11 @@ TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_CHAT_ID = os.environ["TELEGRAM_CHAT_ID"]
 FB_COOKIES = os.environ["FB_COOKIES"]
 
+# Optional: route the scraper's browser through a fixed proxy so Facebook always
+# sees one steady connection. Format: http://user:pass@host:port
+# If unset (e.g. running on a home machine), the browser connects directly.
+PROXY_URL = os.environ.get("PROXY_URL", "").strip()
+
 def _parse_groups(text: str) -> list[str]:
     groups = []
     for line in text.splitlines():

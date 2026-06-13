@@ -41,7 +41,7 @@ def run_check() -> bool:
         return True
 
     try:
-        posts = scrape_all_groups(config.GROUP_IDS, config.FB_COOKIES)
+        posts = scrape_all_groups(config.GROUP_IDS, config.FB_COOKIES, config.PROXY_URL)
     except SessionExpiredError as exc:
         logger.error("Session expired: %s", exc)
         now = datetime.datetime.now(datetime.timezone.utc)

@@ -3,6 +3,7 @@ import time
 import json
 import re
 import logging
+from urllib.parse import urlparse
 from playwright.sync_api import sync_playwright
 
 logger = logging.getLogger(__name__)
@@ -63,6 +64,27 @@ def _parse_cookies(raw: str) -> list[dict]:
                 "path": "/",
             })
     return cookies
+
+
+def _parse_proxy(proxy_url: str | None) -> dict | None:
+    """Turns 'http://user:pass@host:port' into Playwright's proxy dict.
+    Returns None if no proxy is configured (browser then connects directly)."""
+    if not proxy_url or not proxy_url.strip():
+        return None
+    parsed = urlparse(proxy_url.strip())
+    if not parsed.hostname:
+        logger.warning("PROXY_URL set but could not be parsed — connecting directly")
+        return None
+    scheme = parsed.scheme or "http"
+    server = f"{scheme}://{parsed.hostname}"
+    if parsed.port:
+        server += f":{parsed.port}"
+    proxy = {"server": server}
+    if parsed.username:
+        proxy["username"] = parsed.username
+    if parsed.password:
+        proxy["password"] = parsed.password
+    return proxy
 
 
 def _extract_post_id(url: str | None) -> str | None:
@@ -136,12 +158,20 @@ def _scrape_group(page, group_id: str) -> list[dict]:
     return posts
 
 
-def scrape_all_groups(group_ids: list[str], cookie_str: str) -> list[dict]:
+def scrape_all_groups(group_ids: list[str], cookie_str: str, proxy_url: str | None = None) -> list[dict]:
     cookies = _parse_cookies(cookie_str)
     all_posts: list[dict] = []
 
+    launch_kwargs: dict = {"headless": True}
+    proxy = _parse_proxy(proxy_url)
+    if proxy:
+        launch_kwargs["proxy"] = proxy
+        logger.info("Routing browser through proxy %s", proxy["server"])
+    else:
+        logger.info("No proxy configured — connecting directly")
+
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        browser = p.chromium.launch(**launch_kwargs)
         context = browser.new_context(
             user_agent=USER_AGENT,
             viewport={"width": 1280, "height": 800},
