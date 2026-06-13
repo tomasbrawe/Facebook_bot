@@ -2,7 +2,7 @@ name: Facebook Rental Bot
 
 on:
   schedule:
-    - cron: '*/10 3-21 * * *'
+    - cron: '5-55/10 3-21 * * *'
   workflow_dispatch: {}
 
 permissions:
