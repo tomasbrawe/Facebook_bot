@@ -18,6 +18,16 @@ RENTAL CRITERIA:
 Always call the analyze_rental_post tool with your findings.
 If the post is not about renting an apartment (e.g. it's a question, a comment, or selling),
 set matches=false and explain why in the reason field.
+
+IMPORTANT — location is a strict, mandatory filter. Only set matches=true if the post
+clearly indicates the apartment is in one of the required locations in the criteria. If the
+post is in a different area/neighborhood, or the location cannot be determined from the post
+text, set matches=false. Never assume or guess a location that is not actually stated.
+
+Honor any explicit exceptions written in the criteria. In particular, if the criteria say a
+post with NO price should still be sent when everything else fits, then a missing price must
+NOT lower the score: set matches=true for such a post. Make sure the matches boolean agrees
+with your reason — do not say it should be accepted and then set matches=false.
 """
 
 ANALYZE_TOOL = {
@@ -26,13 +36,17 @@ ANALYZE_TOOL = {
     "input_schema": {
         "type": "object",
         "properties": {
-            "matches": {
-                "type": "boolean",
-                "description": "True if the post matches ALL of the rental criteria",
-            },
             "reason": {
                 "type": "string",
-                "description": "One or two sentences explaining the decision",
+                "description": "FIRST think step by step: check the location requirement, "
+                "then size, must-haves, and budget, and apply any criteria exceptions "
+                "(e.g. missing price). State your conclusion in one or two sentences.",
+            },
+            "matches": {
+                "type": "boolean",
+                "description": "Your final decision, which MUST agree with 'reason'. "
+                "True only if the post satisfies the rental criteria (honoring any explicit "
+                "exceptions such as a missing price). False otherwise.",
             },
             "price": {
                 "type": "string",
